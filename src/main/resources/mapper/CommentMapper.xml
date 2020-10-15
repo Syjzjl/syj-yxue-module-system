@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.baizhi.entity.Comment">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="source_id" property="sourceId" />
+        <result column="content" property="content" />
+        <result column="create_at" property="createAt" />
+        <result column="interact_id" property="interactId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, source_id, content, create_at, interact_id
+    </sql>
+
+    <resultMap id="res1" type="com.baizhi.entity.Comment">
+        <id column="id" property="id" />
+        <result column="content" property="content" />
+        <result column="createAt" property="createAt" />
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+        </association>
+        <association  property="fvideo" javaType="Video">
+            <result  column="coverUrl" property="coverUrl"/>
+            <result  column="videoUrl" property="videoUrl"/>
+        </association>
+    </resultMap>
+    <select id="selectComment" resultMap="res1">
+        select n.* from
+            (select c.id,u.username,v.cover_url coverUrl,v.video_url videoUrl,c.content,c.create_at createAt
+             from yx_comment c left join yx_user u on c.user_id=u.id
+                               left join yx_video v on c.source_id=v.id
+             where interact_id=1) n
+            limit #{begin},#{rows}
+    </select>
+
+    <resultMap id="res2" type="com.baizhi.entity.Comment">
+        <id column="id" property="id" />
+        <result column="content" property="content" />
+        <result column="createAt" property="createAt" />
+        <result  column="videoUrl" property="videoUrl"/>
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+        </association>
+        <association  property="fvideo" javaType="Video">
+            <result  column="coverUrl" property="coverUrl"/>
+            <result  column="videoUrl" property="videoUrl"/>
+        </association>
+    </resultMap>
+    <select id="selectTwoComment" resultMap="res2">
+        select n.* from
+            (select c.id,u.username,v.cover_url coverUrl,v.video_url videoUrl,c.content,c.create_at createAt
+             from yx_comment c left join yx_user u on c.user_id=u.id
+                               left join yx_video v on c.source_id=v.id
+             where interact_id=#{id} ) n
+            limit #{begin},#{rows}
+    </select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.baizhi.entity.User">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="mobile" property="mobile" />
+        <result column="sign" property="sign" />
+        <result column="head_show" property="headShow" />
+        <result column="status" property="status" />
+        <result column="reg_time" property="regTime" />
+        <result column="score" property="score" />
+        <result column="wechat" property="wechat" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, username, mobile, sign, head_show, status, reg_time, score, wechat
+    </sql>
+
+    <select id="count" resultType="Integer">
+        select count(id) from yx_user
+    </select>
+
+    <select id="queryCity" resultType="City">
+         select city as name,count(*) as value from yx_user where sex=#{sex} group by city
+    </select>
+    <select id="queryMonth" resultType="Month">
+        SELECT MONTH(reg_time) month,COUNT(id) count FROM yx_user WHERE sex=#{sex} GROUP BY MONTH(reg_time)
+    </select>
+
+    <select id="monthCount" resultType="String">
+SELECT CONCAT(MONTH(reg_time),'月') month,COUNT(id) count FROM yx_user  GROUP BY MONTH(reg_time)
+    </select>
+
+</mapper>

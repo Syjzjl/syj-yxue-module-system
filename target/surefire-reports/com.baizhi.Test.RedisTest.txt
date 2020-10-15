@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.baizhi.Test.RedisTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 30.903 s <<< FAILURE! - in com.baizhi.Test.RedisTest
+test0(com.baizhi.Test.RedisTest)  Time elapsed: 6.056 s  <<< ERROR!
+org.springframework.data.redis.RedisConnectionFailureException: Unable to connect to Redis; nested exception is io.lettuce.core.RedisConnectionException: Unable to connect to localhost:6379
+	at com.baizhi.Test.RedisTest.test0(RedisTest.java:35)
+Caused by: io.lettuce.core.RedisConnectionException: Unable to connect to localhost:6379
+	at com.baizhi.Test.RedisTest.test0(RedisTest.java:35)
+Caused by: io.netty.channel.AbstractChannel$AnnotatedConnectException: Connection refused: no further information: localhost/127.0.0.1:6379
+Caused by: java.net.ConnectException: Connection refused: no further information
+

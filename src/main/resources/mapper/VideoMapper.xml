@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.VideoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="cover_url" property="coverUrl" />
+        <result column="video_url" property="videoUrl" />
+        <result column="create_at" property="createAt" />
+        <result column="user_id" property="userId" />
+        <result column="c_id" property="cId" />
+        <result column="grp_id" property="grpId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, title, intro, cover_url, video_url, create_at, user_id, c_id, grp_id
+    </sql>
+
+    <resultMap id="res1" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAllVideo" resultMap="res1">
+
+       select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.username,c.name cname,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+       from  yx_video v left join yx_user u  on v.user_id=u.id
+                        left join yx_category c on v.c_id=c.id
+                        left join yx_group g on v.grp_id=g.id
+                        left join yx_play p on v.id=p.video_id
+    limit #{begin},#{rows}
+   </select>
+
+    <resultMap id="res2" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByVideo" resultMap="res2">
+
+        select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.username,c.name cname,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+        from  yx_video v left join yx_user u  on v.user_id=u.id
+        left join yx_category c on v.c_id=c.id
+        left join yx_group g on v.grp_id=g.id
+        left join yx_play p on v.id=p.video_id
+        <where>
+            <if test="searchOper='eq'">
+                <if test="searchField!=null"> #{searchField}=#{searchString}</if>
+            </if>
+            <if test="searchOper='cn'">
+                <if test="searchField!=null"> #{searchField} like '%'||#{searchString}||'%'</if>
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="res3" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+            <result  column="headShow" property="headShow"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectVideo" resultMap="res3">
+
+        select n.* from (
+                            select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.username,c.name cname,u.head_show headShow,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+                            from  yx_video v left join yx_user u  on v.user_id=u.id
+                                             left join yx_category c on v.c_id=c.id
+                                             left join yx_group g on v.grp_id=g.id
+                                             left join yx_play p on v.id=p.video_id
+
+                        ) n
+        order by createAt  desc
+    </select>
+
+    <resultMap id="res4" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="username" property="username"/>
+            <result  column="headShow" property="headShow"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAppByVideo" resultMap="res4">
+
+        select n.* from (
+                            select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.username,c.name cname,u.head_show headShow,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+                            from  yx_video v left join yx_user u  on v.user_id=u.id
+                                             left join yx_category c on v.c_id=c.id
+                                             left join yx_group g on v.grp_id=g.id
+                                             left join yx_play p on v.id=p.video_id
+                            where title like concat(concat('%',#{content}),'%')
+                        ) n
+        order by createAt  desc
+    </select>
+
+    <resultMap id="res5" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="uid" property="id"/>
+            <result  column="username" property="username"/>
+            <result  column="headShow" property="headShow"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cid" property="id"/>
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectNoVideo" resultMap="res5">
+
+        select n.* from (
+                            select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.id uid,u.username,c.id cid,c.name cname,u.head_show headShow,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+                            from  yx_video v left join yx_user u  on v.user_id=u.id
+                                left join yx_category c on v.c_id=c.id
+                                left join yx_group g on v.grp_id=g.id
+                                left join yx_play p on v.id=p.video_id
+        where  v.id != #{videoId}
+        ) n
+        order by createAt  desc
+    </select>
+
+    <resultMap id="res6" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="uid" property="id"/>
+            <result  column="username" property="username"/>
+            <result  column="headShow" property="headShow"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cid" property="id"/>
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAppVideo" resultMap="res6">
+
+        select n.* from (
+                            select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.id uid,u.username,c.id cid,c.name cname,u.head_show headShow,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+                            from  yx_video v left join yx_user u  on v.user_id=u.id
+                                             left join yx_category c on v.c_id=c.id
+                                             left join yx_group g on v.grp_id=g.id
+                                             left join yx_play p on v.id=p.video_id
+                        ) n
+        where id=#{videoId}
+        order by createAt  desc
+    </select>
+
+    <resultMap id="res7" type="com.baizhi.entity.Video">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="intro" property="intro" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="createAt" property="createAt" />
+        <result column="likeNum" property="likeNum" />
+        <association  property="fuser" javaType="User">
+            <result  column="uid" property="id"/>
+            <result  column="username" property="username"/>
+            <result  column="headShow" property="headShow"/>
+        </association>
+        <association  property="fcate" javaType="com.baizhi.entity.Category">
+            <result  column="cid" property="id"/>
+            <result  column="cname" property="name"/>
+        </association>
+        <association  property="fgroup" javaType="com.baizhi.entity.Group">
+            <result  column="gname" property="name"/>
+        </association>
+        <association  property="fplay" javaType="com.baizhi.entity.Play">
+            <result  column="playNum" property="playNum"/>
+        </association>
+    </resultMap>
+
+    <select id="queryAll" resultMap="res7">
+       select n.* from (
+                            select v.id,v.title,v.intro,v.cover_url coverUrl,v.video_url videoUrl,v.create_at createAt,u.username,c.name cname,u.head_show headShow,g.name gname,p.play_num playNum,(select count(*) from yx_like l where l.source_id = v.id) likeNum
+                            from  yx_video v left join yx_user u  on v.user_id=u.id
+                                             left join yx_category c on v.c_id=c.id
+                                             left join yx_group g on v.grp_id=g.id
+                                             left join yx_play p on v.id=p.video_id
+
+                        ) n
+        order by createAt  desc
+    </select>
+
+</mapper>

@@ -1,0 +1,32 @@
+server:
+  port: 8081
+  servlet:
+    jsp:
+      init-parameters:
+        development: true #开启JSP开发模式修改页面刷新即可
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yx?useUnicode=true&characterEncoding=GBK
+    username: root
+    password: syjzjl
+  redis:
+    host: 192.168.175.131
+    port: 6379
+    database: 1
+  servlet:
+      multipart:
+        max-file-size: 1000MB
+        max-request-size: 1000MB
+  data:
+    elasticsearch:
+      cluster-nodes: 192.168.175.132:9300
+logging:
+    level:
+      com.baizhi.dao: debug
+
+mybatis-plus:
+  mapper-locations: mapper/*Mapper.xml
+  type-aliases-package: com.baizhi.entity
